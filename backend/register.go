@@ -59,7 +59,7 @@ func (ctx *PublicController)RegisterCome(c *gin.Context) {
 		c.String(http.StatusCreated, fmt.Sprintf("%s come to the lab at %s", name, currentTime.Format(time.UnixDate)))
 
 		registerType := "come"
-        data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%s", currentTime.Format(time.UnixDate)), registerType}
+        data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType}
 		RowValue := ConvertRowValue(data1D);
 		ctx.SheetService.Spreadsheets.Values.Append(spreadsheetId, "DatalabService", RowValue).ValueInputOption("USER_ENTERED").Context(context.Background()).Do()
 
@@ -93,7 +93,7 @@ func (ctx *PublicController)RegisterLeave(c *gin.Context) {
 		c.String(http.StatusCreated, fmt.Sprintf("%s leave the lab at %s", name, currentTime.Format(time.UnixDate)))
 
 		registerType := "leave"
-		data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%s", currentTime.Format(time.UnixDate)), registerType}
+		data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType}
 		RowValue := ConvertRowValue(data1D);
 		ctx.SheetService.Spreadsheets.Values.Append(spreadsheetId, "DatalabService", RowValue).ValueInputOption("USER_ENTERED").Context(context.Background()).Do()
 	}
