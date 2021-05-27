@@ -1,22 +1,28 @@
 package main
 
 import (
+	"context"
 	"errors"
+	"log"
 	"net/http"
 	"path/filepath"
 	"runtime"
 
 	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/redis"
+	"github.com/gin-contrib/sessions/cookie"
 
 	// "github.com/gin-contrib/sessions/redis"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pin-yu/datalab-name-registration/backend"
+
+	"google.golang.org/api/option"
+	"google.golang.org/api/sheets/v4"
 )
 
 var fullchain = filepath.Join(BasePath(), "certs/fullchain.pem")
 var privkey = filepath.Join(BasePath(), "certs/privkey.pem")
+var serviceAccountSecret = filepath.Join(BasePath(), "credential/service.json")
 
 var ErrUnauthorized = errors.New("please login")
 
@@ -76,8 +82,11 @@ func main() {
 	register.Use(registerAuthentication())
 	register.Static("/", filepath.Join(BasePath(), "frontend/register"))
 
-	register.POST("/come", backend.RegisterCome)
-	register.POST("/leave", backend.RegisterLeave)
+	ctx := context.Background()
+	srv, _ := sheets.NewService(ctx, option.WithCredentialsFile(serviceAccountSecret), option.WithScopes(sheets.SpreadsheetsScope))
+	pCtrl := backend.PublicController { SheetService: srv }
+	register.POST("/come", pCtrl.RegisterCome)
+	register.POST("/leave", pCtrl.RegisterLeave)
 
 	// separate a group because login page doesn't have to authenticate
 	login := r.Group("/login")
