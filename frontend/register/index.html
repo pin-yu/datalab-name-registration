@@ -11,22 +11,23 @@
 </head>
 
 <body>
-  <div class="d-flex flex-column vw-100 vh-100 justify-content-center align-items-center">
-    <div>
-      <form action="./come" method="post">
-        <button class="btn btn-outline-primary" name="come to the lab" value="come">進入實驗室</button>
+  <div class="container d-flex flex-column vw-100 vh-100 justify-content-center align-items-center">
+    <div class="row">
+      <form class="m-1" action="./come" method="post">
+        <a class="btn btn-outline-primary d-flex align-items-center justify-content-center" name="come to the lab" value="come">進入實驗室</a>
       </form>
-      <form action="./leave" method="post">
-        <button class="btn btn-outline-primary" name="leave the lab" value="leave">離開實驗室</button>
+      <form class="m-1" action="./leave" method="post">
+        <a class="btn btn-outline-primary d-flex align-items-center justify-content-center" name="leave the lab" value="leave">離開實驗室</a>
       </form>
-    </div>
-    <div>
-      <a id="google_logout" class="btn btn-outline-primary d-flex flex-row align-items-center p-1" id="google_logout" href="/logout">
-        <div class="bg-white rounded p-1">
-          <img src="/img/google.svg" alt="" width="24" height="24">
-        </div>
-        <span class="mx-2">Google Logout</span>
-      </a>
+      <div class="m-1">
+        <a id="google_logout" class="btn btn-outline-primary d-flex flex-row align-items-center justify-content-center p-1" id="google_logout"
+          href="/logout">
+          <div class="bg-white rounded p-1">
+            <img src="/img/google.svg" alt="" width="16" height="16">
+          </div>
+          <span class="mx-2">Google Logout</span>
+        </a>
+      </div>
     </div>
   </div>
 </body>
