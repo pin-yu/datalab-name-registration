@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
+	"log"
 	"net/http"
 	"path/filepath"
 	"runtime"
@@ -39,11 +41,13 @@ func registerAuthentication() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 
+		log.Println(fmt.Sprint(session.Get("email")))
+
 		if session.Get("email") != nil {
 			c.Next()
 		}
 
-		c.Redirect(http.StatusSeeOther, "/login")
+		c.AbortWithError(http.StatusUnauthorized, errors.New("please login first"))
 	}
 }
 
@@ -68,6 +72,7 @@ func main() {
 	root := r.Group("/")
 	root.Use(authentication())
 	root.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusSeeOther, "/login")
 	})
 
 	register := r.Group("/register")

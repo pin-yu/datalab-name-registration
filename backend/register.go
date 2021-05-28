@@ -77,7 +77,7 @@ func (ctx *PublicController) RegisterLeave(c *gin.Context) {
 		c.String(http.StatusCreated, fmt.Sprintf("%s leave the lab at %s", name, currentTime.Format(time.UnixDate)), fmt.Sprintf("%s", email))
 
 		registerType := "leave"
-		data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType}
+		data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType, fmt.Sprintf("%s", email)}
 		RowValue := ConvertRowValue(data1D)
 		ctx.SheetService.Spreadsheets.Values.Append(spreadsheetId, "DatalabService", RowValue).ValueInputOption("USER_ENTERED").Context(context.Background()).Do()
 	}
