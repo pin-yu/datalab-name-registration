@@ -3,15 +3,12 @@ package main
 import (
 	"context"
 	"errors"
-	"log"
 	"net/http"
 	"path/filepath"
 	"runtime"
 
 	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
-
-	// "github.com/gin-contrib/sessions/redis"
+	"github.com/gin-contrib/sessions/redis"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pin-yu/datalab-name-registration/backend"
@@ -22,7 +19,7 @@ import (
 
 var fullchain = filepath.Join(BasePath(), "certs/fullchain.pem")
 var privkey = filepath.Join(BasePath(), "certs/privkey.pem")
-var serviceAccountSecret = filepath.Join(BasePath(), "credential/service.json")
+var serviceAccountSecret = filepath.Join(BasePath(), "credential/google-service.json")
 
 var ErrUnauthorized = errors.New("please login")
 
@@ -34,20 +31,13 @@ func authentication() gin.HandlerFunc {
 			c.Redirect(http.StatusTemporaryRedirect, "/register")
 		}
 
-		c.Redirect(http.StatusSeeOther, "/login")
+		c.Next()
 	}
 }
 
 func registerAuthentication() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-
-		session.Options(sessions.Options{
-			MaxAge:   3600 * 16, // 16 hours
-			Path:     "/",
-			Secure:   true,
-			HttpOnly: true,
-		})
 
 		if session.Get("email") != nil {
 			c.Next()
@@ -62,14 +52,16 @@ func main() {
 
 	// store := cookie.NewStore([]byte(backend.LoadSecret()))
 	store, _ := redis.NewStore(10, "tcp", "localhost:6379", "", []byte(backend.LoadSecret()))
+
+	// store-level sessions
 	store.Options(sessions.Options{
-		MaxAge:   3600 * 16, // 16 hours
+		MaxAge:   3600 * 24, // 24 hours
 		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
 	})
 
-	r.Use(sessions.Sessions("session", store))
+	r.Use(sessions.Sessions("authentication-session", store))
 
 	r.Static("/img", "./frontend/img")
 
@@ -84,7 +76,7 @@ func main() {
 
 	ctx := context.Background()
 	srv, _ := sheets.NewService(ctx, option.WithCredentialsFile(serviceAccountSecret), option.WithScopes(sheets.SpreadsheetsScope))
-	pCtrl := backend.PublicController { SheetService: srv }
+	pCtrl := backend.PublicController{SheetService: srv}
 	register.POST("/come", pCtrl.RegisterCome)
 	register.POST("/leave", pCtrl.RegisterLeave)
 

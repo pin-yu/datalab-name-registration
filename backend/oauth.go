@@ -45,7 +45,6 @@ func GoogleOauthLogin(c *gin.Context) {
 	// prevent CSRF
 	session := sessions.Default(c)
 	session.Set("state", state)
-	session.Options(sessions.Options{Path: "/", MaxAge: 3600 * 1})
 	err := session.Save()
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)

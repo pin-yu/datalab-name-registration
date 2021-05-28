@@ -21,7 +21,7 @@ type PublicController struct {
 	SheetService *sheets.Service
 }
 
-func ConvertRowValue(data1D []string)(*sheets.ValueRange){
+func ConvertRowValue(data1D []string) *sheets.ValueRange {
 	s1D := make([]interface{}, len(data1D))
 	for i, v := range data1D {
 		s1D[i] = v
@@ -29,20 +29,14 @@ func ConvertRowValue(data1D []string)(*sheets.ValueRange){
 	s2D := [][]interface{}{}
 	s2D = append(s2D, s1D)
 	rb := &sheets.ValueRange{
-		MajorDimension:  "ROWS",
-		Values:          s2D,
+		MajorDimension: "ROWS",
+		Values:         s2D,
 	}
 	return rb
 }
 
-func (ctx *PublicController)RegisterCome(c *gin.Context) {
+func (ctx *PublicController) RegisterCome(c *gin.Context) {
 	session := sessions.Default(c)
-	session.Options(sessions.Options{
-		MaxAge:   3600 * 16, // 16 hours
-		Path:     "/",
-		Secure:   true,
-		HttpOnly: true,
-	})
 
 	currentTime := time.Now()
 
@@ -52,16 +46,13 @@ func (ctx *PublicController)RegisterCome(c *gin.Context) {
 
 	if currentStatus != inLab {
 		session.Set(status, inLab)
-		session.Options(sessions.Options{
-			MaxAge: 3600 * 16, // 16hrs
-		})
 		session.Save()
 
 		c.String(http.StatusCreated, fmt.Sprintf("%s come to the lab at %s", name, currentTime.Format(time.UnixDate)))
 
 		registerType := "come"
-        data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType, fmt.Sprintf("%s", email)}
-		RowValue := ConvertRowValue(data1D);
+		data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType, fmt.Sprintf("%s", email)}
+		RowValue := ConvertRowValue(data1D)
 		ctx.SheetService.Spreadsheets.Values.Append(spreadsheetId, "DatalabService", RowValue).ValueInputOption("USER_ENTERED").Context(context.Background()).Do()
 
 	} else {
@@ -69,14 +60,8 @@ func (ctx *PublicController)RegisterCome(c *gin.Context) {
 	}
 }
 
-func (ctx *PublicController)RegisterLeave(c *gin.Context) {
+func (ctx *PublicController) RegisterLeave(c *gin.Context) {
 	session := sessions.Default(c)
-	session.Options(sessions.Options{
-		MaxAge:   3600 * 8, // 16 hours
-		Path:     "/",
-		Secure:   true,
-		HttpOnly: true,
-	})
 
 	currentTime := time.Now()
 
@@ -88,15 +73,12 @@ func (ctx *PublicController)RegisterLeave(c *gin.Context) {
 		c.String(http.StatusBadRequest, fmt.Sprintf("%s has no register record today", name))
 	} else {
 		session.Set(status, notInLab)
-		session.Options(sessions.Options{
-			MaxAge: 3600 * 8, // 16hrs
-		})
 		session.Save()
 		c.String(http.StatusCreated, fmt.Sprintf("%s leave the lab at %s", name, currentTime.Format(time.UnixDate)), fmt.Sprintf("%s", email))
 
 		registerType := "leave"
 		data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType}
-		RowValue := ConvertRowValue(data1D);
+		RowValue := ConvertRowValue(data1D)
 		ctx.SheetService.Spreadsheets.Values.Append(spreadsheetId, "DatalabService", RowValue).ValueInputOption("USER_ENTERED").Context(context.Background()).Do()
 	}
 }

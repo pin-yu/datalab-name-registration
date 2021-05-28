@@ -18,7 +18,7 @@ type GoogleCredential struct {
 }
 
 func LoadGoogleCredential() *GoogleCredential {
-	bytes, err := ioutil.ReadFile(filepath.Join(BasePath(), "../credential/google.json"))
+	bytes, err := ioutil.ReadFile(filepath.Join(BasePath(), "../credential/google-oauth.json"))
 	if err != nil {
 		log.Fatal("cannot load google.json")
 	}
@@ -31,7 +31,7 @@ func LoadGoogleCredential() *GoogleCredential {
 }
 
 func LoadSecret() string {
-	bytes, err := ioutil.ReadFile(filepath.Join(BasePath(), "../credential/secret.json"))
+	bytes, err := ioutil.ReadFile(filepath.Join(BasePath(), "../credential/session-secret.json"))
 	if err != nil {
 		log.Fatal("cannot load secret.json")
 	}
