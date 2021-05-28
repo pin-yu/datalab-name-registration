@@ -11,18 +11,24 @@
 </head>
 
 <body>
-  <form action="./come" method="post">
-    <button name="come to the lab" value="come">進入實驗室</button>
-  </form>
-
-  <form action="./leave" method="post">
-    <button name="leave the lab" value="leave">離開實驗室</button>
-  </form>
-
-
-  <a id="google_logout" href="/logout">
-    <img src="/img/google.svg" alt="">
-    <span>Google Logout</span>
-  </a>
+  <div class="container d-flex flex-column vw-100 vh-100 justify-content-center align-items-center">
+    <div class="row">
+      <form class="m-1" action="./come" method="post">
+        <button class="w-100 btn btn-outline-primary d-flex align-items-center justify-content-center" name="come to the lab" value="come">進入實驗室</button>
+      </form>
+      <form class="m-1" action="./leave" method="post">
+        <button class="w-100 btn btn-outline-primary d-flex align-items-center justify-content-center" name="leave the lab" value="leave">離開實驗室</button>
+      </form>
+      <div class="m-1">
+        <a id="google_logout" class="btn btn-outline-primary d-flex flex-row align-items-center justify-content-center p-1" id="google_logout"
+          href="/logout">
+          <div class="bg-white rounded p-1">
+            <img src="/img/google.svg" alt="" width="16" height="16">
+          </div>
+          <span class="mx-2">Google Logout</span>
+        </a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
