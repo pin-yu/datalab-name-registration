@@ -31,9 +31,9 @@ func authentication() gin.HandlerFunc {
 
 		if session.Get("email") != nil {
 			c.Redirect(http.StatusTemporaryRedirect, "/register")
+		} else {
+			c.Next()
 		}
-
-		c.Next()
 	}
 }
 
@@ -45,9 +45,9 @@ func registerAuthentication() gin.HandlerFunc {
 
 		if session.Get("email") != nil {
 			c.Next()
+		} else {
+			c.AbortWithError(http.StatusUnauthorized, errors.New("please login first"))
 		}
-
-		c.AbortWithError(http.StatusUnauthorized, errors.New("please login first"))
 	}
 }
 

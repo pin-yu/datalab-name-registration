@@ -42,22 +42,22 @@ func (ctx *PublicController) RegisterCome(c *gin.Context) {
 
 	name := session.Get("name")
 	email := session.Get("email")
-	currentStatus := fmt.Sprintf("%v", session.Get(status))
+	// currentStatus := fmt.Sprintf("%v", session.Get(status))
 
-	if currentStatus != inLab {
-		session.Set(status, inLab)
-		session.Save()
+	// if currentStatus != inLab {
+	// 	session.Set(status, inLab)
+	// 	session.Save()
 
-		c.String(http.StatusCreated, fmt.Sprintf("%s come to the lab at %s", name, currentTime.Format(time.UnixDate)))
+	c.String(http.StatusCreated, fmt.Sprintf("%s come to the lab at %s", name, currentTime.Format(time.UnixDate)))
 
-		registerType := "come"
-		data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType, fmt.Sprintf("%s", email)}
-		RowValue := ConvertRowValue(data1D)
-		ctx.SheetService.Spreadsheets.Values.Append(spreadsheetId, "DatalabService", RowValue).ValueInputOption("USER_ENTERED").Context(context.Background()).Do()
+	registerType := "come"
+	data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType, fmt.Sprintf("%s", email)}
+	RowValue := ConvertRowValue(data1D)
+	ctx.SheetService.Spreadsheets.Values.Append(spreadsheetId, "DatalabService", RowValue).ValueInputOption("USER_ENTERED").Context(context.Background()).Do()
 
-	} else {
-		c.String(http.StatusAlreadyReported, fmt.Sprintf("%s have registered today", name))
-	}
+	// } else {
+	// 	c.String(http.StatusAlreadyReported, fmt.Sprintf("%s have registered today", name))
+	// }
 }
 
 func (ctx *PublicController) RegisterLeave(c *gin.Context) {
@@ -67,18 +67,18 @@ func (ctx *PublicController) RegisterLeave(c *gin.Context) {
 
 	name := session.Get("name")
 	email := session.Get("email")
-	currentStatus := fmt.Sprintf("%v", session.Get(status))
+	// currentStatus := fmt.Sprintf("%v", session.Get(status))
 
-	if currentStatus != inLab {
-		c.String(http.StatusBadRequest, fmt.Sprintf("%s has no register record today", name))
-	} else {
-		session.Set(status, notInLab)
-		session.Save()
-		c.String(http.StatusCreated, fmt.Sprintf("%s leave the lab at %s", name, currentTime.Format(time.UnixDate)), fmt.Sprintf("%s", email))
+	// if currentStatus != inLab {
+	// 	c.String(http.StatusBadRequest, fmt.Sprintf("%s has no register record today", name))
+	// } else {
+	// session.Set(status, notInLab)
+	// session.Save()
+	c.String(http.StatusCreated, fmt.Sprintf("%s leave the lab at %s", name, currentTime.Format(time.UnixDate)), fmt.Sprintf("%s", email))
 
-		registerType := "leave"
-		data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType, fmt.Sprintf("%s", email)}
-		RowValue := ConvertRowValue(data1D)
-		ctx.SheetService.Spreadsheets.Values.Append(spreadsheetId, "DatalabService", RowValue).ValueInputOption("USER_ENTERED").Context(context.Background()).Do()
-	}
+	registerType := "leave"
+	data1D := []string{fmt.Sprintf("%s", name), fmt.Sprintf("%d", currentTime.Unix()), registerType, fmt.Sprintf("%s", email)}
+	RowValue := ConvertRowValue(data1D)
+	ctx.SheetService.Spreadsheets.Values.Append(spreadsheetId, "DatalabService", RowValue).ValueInputOption("USER_ENTERED").Context(context.Background()).Do()
+	// }
 }
